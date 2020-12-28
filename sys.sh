@@ -49,3 +49,10 @@ svc() {
 
 	svcout
 }
+
+# version switcher
+# $1 - new default version
+phpsw() {
+	sudo update-alternatives --set php /usr/bin/php$1
+	php -v
+}

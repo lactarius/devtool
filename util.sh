@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 # is string an IPv4 address?
 # $1 tested string
 is_ip4() {

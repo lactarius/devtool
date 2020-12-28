@@ -94,6 +94,7 @@ _site_list() {
 	lstout
 }
 
+# site management
 site() {
 	declare title
 

@@ -54,6 +54,7 @@ _host() {
 	return 0
 }
 
+# IP hosts management
 host() {
 	declare title='Hosts'
 	SHORT=-n:s

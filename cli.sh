@@ -12,19 +12,23 @@ drawline() {
 	col $color "$UI_LINE"
 }
 
+# clean msg stack
 msgclr() {
 	MSG=()
 	MSG_TYPE=()
 	ERR_CNT=0
 }
 
+# printout messages
+# $1 - title (notification)
+# $2 - line length (max msg length)
 msgout() {
-	declare title="$1"
-	declare -i i cnt=${#MSG[@]}
+	declare title="${1:-'notification'}"
+	declare -i i cnt=${#MSG[@]} linelength=${2:-$MSG_MAX_LENGTH}
 
 	((cnt == 0)) && return 0
 
-	prepareline $MSG_MAX_LENGTH
+	prepareline $linelength
 
 	col $MSG_TITLE_COLOR "$title"
 
@@ -53,6 +57,7 @@ svcout() {
 	drawline
 }
 
+# print site list
 lstout() {
 	declare -i i
 

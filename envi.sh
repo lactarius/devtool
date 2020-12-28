@@ -86,6 +86,7 @@ _envi_tidy() {
 		addmsg "NginX extended settings removed."
 }
 
+# manage environment
 envi() {
 	declare title
 

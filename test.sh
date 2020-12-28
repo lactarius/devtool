@@ -1,3 +1,0 @@
-f() {
-  echo fuck
-}

@@ -54,6 +54,7 @@ _pool_rm() {
 	fi
 }
 
+# FMT pools management
 pool() {
 	SHORT=-fn:p:
 	LONG=force,name:,php:
