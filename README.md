@@ -1,70 +1,79 @@
 # devtool
 LEMP with multiversion PHP project manager
 
-* Load devtool helper
+#### Load devtool helper
 
 ```shell
 cd devtool
 source cli.sh
 cd
 ```
-* Prepare environment
+#### Prepare environment
 ```
-envi prep [ --force ]
+envi prep [ --force | -f ]
 ```
+* --force - remove first
 
-* Create site
-```
-site add website [ --root src/www ] [ --php 7.1 ]
-```
-
-* Disable / enable site
-```
-site dis / ena website
-```
-
-* List sites
-```
-site ls
-```
-
-* Remove site
-```
-site rm website [ --force ]
-```
-
-_Not necessary, but you can_:
-
-* Create PHP-FMT pool for site
-```
-pool add website [ --php 7.1 ]
-```
-
-* Add IP host record for site
-```
-host add website
-```
-
-* Remove environment
+#### Remove environment
 ```
 envi tidy
 ```
 
+#### Create site
+```
+site add website [ --root | -r PATH ] [ --php | -p X.Y ] [ --quiet | -q ] [ --simple | -s ]
+```
+* --root - project root path (index.php)
+* --php	- PHP version
+* --quiet - register only existing project directory
+* --simple - don't touch the hosts order
+
+#### Disable / enable site
+```
+site dis / ena website
+```
+
+#### Remove site
+```
+site rm website [ --force | -f ]
+```
+* --force - remove rests and all PHP versions pools
+
+#### List sites
+```
+site ls
+```
+
+_Individually_:
+
+#### Create PHP-FPM pool for site
+```
+pool add website [ --php | -p X.Y ]
+```
+* --php	- PHP version
+
+#### Add IP host record for site
+```
+host add website [ --simple ]
+```
+* --simple - don't touch the hosts order
+
 _Services_:
 
 ```
-svc [ command ] [ service(s) ]
+svc [ p | r | s ] [ service(s) ]
 ```
-_Commands_:
 * p - stop
-* s - start
 * r - restart
+* s - start
 
 _Services status_:
 ```
 svc
 ```
-_Restart NGINX server and PHP7.2 FMT services_:
+
+
+_Example - restart NginX server and PHP7.2 FPM services_:
 ```
 svc r ng 2
 ```

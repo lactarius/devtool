@@ -12,6 +12,7 @@ declare NAME
 declare ROOT="$DEF_ROOT"
 declare PHPV="$(phpver)"
 declare -i FORCE
+declare -i QUIET
 declare -i SIMPLE
 declare PARSED
 declare -a POSARG
@@ -22,6 +23,7 @@ declare LONG
 # OPTIONS & ARGUMENTS
 _optarg() {
 	FORCE=0
+	QUIET=0
 	SIMPLE=0
 	NAME=''
 	POSARG=()
@@ -35,6 +37,7 @@ _optarg() {
 	while (($# > 0)); do
 		case $1 in
 			-f | --force) FORCE=1 ;;
+			-q | --quiet) QUIET=1 ;;
 			-s | --simple) SIMPLE=1 ;;
 			-n | --name)
 				shift

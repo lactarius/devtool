@@ -42,26 +42,28 @@ _site_dis() {
 }
 
 _site_add() {
-	declare sitedef docroot
+	declare sitedef docroot="$(readlink -m "$DEV_PATH/$NAME/$ROOT")"
 
 	# environment doesn't exist
 	[[ ! -d $DEV_PATH ]] && addmsg "The development path doesn't exist. Run 'envi prep' first." $MSG_TYPE_ERR
-	# site path already exists
-	[[ -d $DEV_PATH/$NAME ]] && addmsg "Site '$NAME' development path already exists." $MSG_TYPE_ERR
+	# site path already exists && NOT quiet
+	((!QUIET)) && [[ -d $DEV_PATH/$NAME ]] && addmsg "Site '$NAME' development path already exists." $MSG_TYPE_ERR
+	# site path already exists && quiet
+	((QUIET)) && [[ ! -d $DEV_PATH/$NAME ]] && addmsg "Site '$NAME' development path doesn't exist." $MSG_TYPE_ERR
+	# site document root path doesn't exist && quiet
+	((QUIET)) && [[ ! -d $docroot ]] && addmsg "Site '$NAME' document root path doesn't exist."
 	# site definition already exists
 	[[ -f $HTTP_AVAILABLE/$NAME.conf ]] && addmsg "Site '$NAME' definition already exists." $MSG_TYPE_ERR
 
 	((ERR_CNT > 0)) && return 1
 
 	# site definition
-	docroot="$(readlink -m "$DEV_PATH/$NAME/$ROOT")"
 	sitedef="$(site_tpl "$NAME" "$docroot" "$LOG_PATH")"
 	write "$sitedef" "$HTTP_AVAILABLE/$NAME.conf" &&
 		addmsg "Site '$NAME' definition added."
 
 	# index file
-	if mkdir "$DEV_PATH/$NAME"; then
-		#MSG+=("Site '$NAME' development path added.")
+	if ((!QUIET)) && mkdir "$DEV_PATH/$NAME"; then
 		addmsg "Site '$NAME' development path added."
 		[[ ! -d $docroot ]] && mkdir -p "$docroot"
 		write "$(index_tpl)" "$docroot/index.php" &&
@@ -98,8 +100,8 @@ _site_list() {
 site() {
 	declare title
 
-	SHORT=-fn:r:p:
-	LONG=force,name:,root:,php:
+	SHORT=-fn:p:r:q
+	LONG=force,name:,php:,root:,quiet
 	_optarg "$@"
 	msgclr
 
