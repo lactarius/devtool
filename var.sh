@@ -20,23 +20,21 @@ DNS_PATH="$CONF_PATH/hosts"
 DEF_ROOT="/www"
 
 # UI
-declare -a MSG MSG_TYPE SITE_LIST SITE_ENABLED SVC_LIST SVC_STATUS
+declare -a MSG MSG_TYPE SVC_LIST SVC_STATUS SITE_LIST SITE_ENABLED
 declare -i CLI=1 MSG_MAX_LENGTH ERR_CNT=0
-# messages
 MSG_TYPE_COM=0
 MSG_TYPE_WRN=1
 MSG_TYPE_ERR=2
-declare -a MSG_COLOR=(green yellow red)
+
+# CLI
 MSG_TITLE_COLOR=yellow
-ITEM_COLOR=(red green)
+declare -a MSG_COLOR=(green yellow red) ITEM_COLOR=(red green)
+
 # commands
 CMD_ADD='add'
 CMD_RM='rm'
 CMD_ENA='ena'
 CMD_DIS='dis'
-CMD_LIST='list'
-CMD_START='start'
-CMD_STOP='stop'
-CMD_RESTART='restart'
+CMD_LIST='ls'
 declare -i BACKUP_OFF=0
 BACKUP_EXT='bak'

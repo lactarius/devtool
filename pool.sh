@@ -27,7 +27,6 @@ _pool_add() {
 
 	# PHP version isn't installed
 	[[ ! -d $path ]] && addmsg "PHP version '$PHPV' isn't installed or is awkward." $MSG_TYPE_ERR
-
 	# pool definition already exists
 	[[ -f $path/$NAME.conf ]] && addmsg "Pool '$NAME' PHP $PHPV FPM definition already exists." $MSG_TYPE_ERR
 
@@ -36,7 +35,6 @@ _pool_add() {
 	pooldef="$(pool_tpl "$NAME" "$SITE_USER" "$SITE_GROUP" "$LISTEN_OWNER" "$LISTEN_GROUP")"
 	write "$pooldef" "$path/$NAME.conf" &&
 		addmsg "Pool '$NAME' PHP $PHPV FPM definition created."
-
 	return 0
 }
 
@@ -58,10 +56,8 @@ _pool_rm() {
 pool() {
 	SHORT=-fn:p:
 	LONG=force,name:,php:
-
 	_optarg "$@"
 	msgclr
-
 	if [[ $CMD == $CMD_ADD ]]; then
 		_pool_add
 	elif [[ $CMD == $CMD_RM ]]; then
@@ -69,6 +65,5 @@ pool() {
 	else
 		addmsg "Command not recognized: $CMD" $MSG_TYPE_ERR
 	fi
-
 	msgout
 }

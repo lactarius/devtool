@@ -46,10 +46,8 @@ _site_add() {
 
 	# environment doesn't exist
 	[[ ! -d $DEV_PATH ]] && addmsg "The development path doesn't exist. Run 'envi prep' first." $MSG_TYPE_ERR
-
 	# site path already exists
 	[[ -d $DEV_PATH/$NAME ]] && addmsg "Site '$NAME' development path already exists." $MSG_TYPE_ERR
-
 	# site definition already exists
 	[[ -f $HTTP_AVAILABLE/$NAME.conf ]] && addmsg "Site '$NAME' definition already exists." $MSG_TYPE_ERR
 
@@ -81,16 +79,18 @@ _site_rm() {
 }
 
 _site_list() {
-	declare site
+	declare site curdir
 	declare -i enabled
 
 	SITE_ENABLED=()
-	SITE_LIST=($(ls "$DEV_PATH"))
+	curdir=$PWD
+	cd "$DEV_PATH"
+	SITE_LIST=($(ls -d */ | sed 's#/##'))
+	cd "$curdir"
 	for site in "${SITE_LIST[@]}"; do
 		[[ -f $HTTP_ENABLED/$site.conf ]] && enabled=1 || enabled=0
 		SITE_ENABLED+=($enabled)
 	done
-
 	lstout
 }
 
@@ -100,7 +100,6 @@ site() {
 
 	SHORT=-fn:r:p:
 	LONG=force,name:,root:,php:
-
 	_optarg "$@"
 	msgclr
 
@@ -121,6 +120,5 @@ site() {
 		$CMD_LIST) _site_list ;;
 		*) addmsg "Command not recognized: $CMD" $MSG_TYPE_ERR ;;
 	esac
-
 	msgout "$title"
 }

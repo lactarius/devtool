@@ -22,5 +22,5 @@ prepareline() {
 	declare -i length=${1:-20}
 	declare char=${2:-'-'}
 
-	printf -v UI_LINE "%0.s-" $(seq 1 $length)
+	printf -v UI_LINE "%0.s${char}" $(seq 1 $length)
 }

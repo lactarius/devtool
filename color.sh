@@ -5,12 +5,11 @@ declare -A COLORS=([black]=30 [red]=31 [green]=32 [yellow]=33 [blue]=34 [magenta
 # $1 - color
 # $2 - text
 col() {
-  declare ctrl='-e'
+	declare ctrl='-e'
 
-  if [[ $1 == '-n' ]]; then
-    ctrl='-en'
-    shift
-  fi
-
-  echo ${ctrl} "\033[0;${COLORS[$1]}m"${@:2}"\033[0m"
+	if [[ $1 == '-n' ]]; then
+		ctrl='-en'
+		shift
+	fi
+	echo ${ctrl} "\033[0;${COLORS[$1]}m"${@:2}"\033[0m"
 }

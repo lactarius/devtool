@@ -27,17 +27,13 @@ msgout() {
 	declare -i i cnt=${#MSG[@]} linelength=${2:-$MSG_MAX_LENGTH}
 
 	((cnt == 0)) && return 0
-
 	prepareline $linelength
-
 	col $MSG_TITLE_COLOR "$title"
-
 	drawline
 	for ((i = 0; i < cnt; i++)); do
 		col ${MSG_COLOR[${MSG_TYPE[$i]}]} "${MSG[$i]}"
 	done
 	drawline
-
 	msgclr
 }
 
@@ -49,11 +45,9 @@ svcout() {
 	prepareline 14
 	col yellow "Service status"
 	drawline
-
 	for ((i = 0; i < ${#SVC_LIST[@]}; i++)); do
 		col ${ITEM_COLOR[${SVC_STATUS[$i]}]} "${SVC_LIST[$i]}"
 	done
-
 	drawline
 }
 
@@ -64,11 +58,9 @@ lstout() {
 	prepareline 20
 	col yellow "Site list"
 	drawline
-
 	for ((i = 0; i < ${#SITE_LIST[@]}; i++)); do
 		col ${ITEM_COLOR[${SITE_ENABLED[$i]}]} "${SITE_LIST[$i]}"
 	done
-
 	drawline
 }
 

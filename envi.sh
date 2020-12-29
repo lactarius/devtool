@@ -94,7 +94,6 @@ envi() {
 	LONG=force
 	_optarg "$@"
 	msgclr
-
 	if [[ $CMD == 'prep' ]]; then
 		title="Preparing environment"
 		# force - remove first
@@ -106,6 +105,5 @@ envi() {
 	else
 		addmsg "Command not recognized: $CMD" MSG_TYPE_ERR
 	fi
-
 	msgout "$title"
 }

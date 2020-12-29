@@ -57,13 +57,11 @@ _host() {
 # IP hosts management
 host() {
 	declare title='Hosts'
+
 	SHORT=-n:s
 	LONG=name:simple
-
 	_optarg "$@"
 	msgclr
-
 	_host
-
 	msgout
 }
