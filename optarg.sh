@@ -7,18 +7,12 @@ if (($? != 4)); then
 fi
 
 # VARIABLES
-declare CMD
-declare NAME
-declare ROOT="$DEF_ROOT"
-declare PHPV="$(phpver)"
-declare -i FORCE
-declare -i QUIET
-declare -i SIMPLE
+declare CMD NAME ROOT="$DEF_ROOT" PHPV="$(phpver)"
+declare -i FORCE QUIET SIMPLE
 declare PARSED
 declare -a POSARG
 declare -i NPOSARG
-declare SHORT
-declare LONG
+declare SHORT LONG
 
 # OPTIONS & ARGUMENTS
 _optarg() {

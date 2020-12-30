@@ -45,30 +45,36 @@ _site_add() {
 	declare sitedef docroot="$(readlink -m "$DEV_PATH/$NAME/$ROOT")"
 
 	# environment doesn't exist
-	[[ ! -d $DEV_PATH ]] && addmsg "The development path doesn't exist. Run 'envi prep' first." $MSG_TYPE_ERR
-	# site path already exists && NOT quiet
-	((!QUIET)) && [[ -d $DEV_PATH/$NAME ]] && addmsg "Site '$NAME' development path already exists." $MSG_TYPE_ERR
-	# site path already exists && quiet
-	((QUIET)) && [[ ! -d $DEV_PATH/$NAME ]] && addmsg "Site '$NAME' development path doesn't exist." $MSG_TYPE_ERR
-	# site document root path doesn't exist && quiet
-	((QUIET)) && [[ ! -d $docroot ]] && addmsg "Site '$NAME' document root path doesn't exist."
-	# site definition already exists
-	[[ -f $HTTP_AVAILABLE/$NAME.conf ]] && addmsg "Site '$NAME' definition already exists." $MSG_TYPE_ERR
+	[[ ! -d $DEV_PATH ]] &&
+		addmsg "The development path doesn't exist. Run 'envi prep' first." $MSG_TYPE_ERR &&
+		return 1
 
-	((ERR_CNT > 0)) && return 1
+	[[ -f $HTTP_AVAILABLE/$NAME.conf ]] &&
+		addmsg "Site '$NAME' definition already exists." $MSG_TYPE_ERR &&
+		return 1
+
+	# project path exists
+	if [[ -d $DEV_PATH/$NAME ]]; then
+		# index.php existence
+		indexpath=$(find "$DEV_PATH/$NAME" -name 'index.php')
+		# force mot used >> use original docroot
+		[[ -n $indexpath && $FORCE -eq 0 ]] && docroot="$(dirname $indexpath)"
+	else
+		mkdir "$DEV_PATH/$NAME" && addmsg "Site '$NAME' project path added."
+	fi
+
+	# document root doesn't exist
+	[[ ! -d $docroot ]] && mkdir -p "$docroot" && addmsg "Site '$NAME' document root path added"
+
+	# index.php file doesn't exist or force
+	[[ -z $indexpath || $FORCE -eq 1 ]] &&
+		write "$(index_tpl)" "$docroot/index.php" &&
+		addmsg "Site '$NAME' testing index.php file added."
 
 	# site definition
 	sitedef="$(site_tpl "$NAME" "$docroot" "$LOG_PATH")"
 	write "$sitedef" "$HTTP_AVAILABLE/$NAME.conf" &&
 		addmsg "Site '$NAME' definition added."
-
-	# index file
-	if ((!QUIET)) && mkdir "$DEV_PATH/$NAME"; then
-		addmsg "Site '$NAME' development path added."
-		[[ ! -d $docroot ]] && mkdir -p "$docroot"
-		write "$(index_tpl)" "$docroot/index.php" &&
-			addmsg "Testing index.php file added."
-	fi
 
 	return 0
 }

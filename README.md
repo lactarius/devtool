@@ -21,11 +21,11 @@ envi tidy
 
 #### Create site
 ```
-site add website [ --root | -r PATH ] [ --php | -p X.Y ] [ --quiet | -q ] [ --simple | -s ]
+site add website [ --root | -r PATH ] [ --php | -p X.Y ] [ --force | -f ] [ --simple | -s ]
 ```
 * --root - project root path (index.php)
 * --php	- PHP version
-* --quiet - register only existing project directory
+* --force - force defined document root
 * --simple - don't touch the hosts order
 
 #### Disable / enable site
@@ -58,8 +58,7 @@ host add website [ --simple ]
 ```
 * --simple - don't touch the hosts order
 
-_Services_:
-
+#### Services
 ```
 svc [ p | r | s ] [ service(s) ]
 ```
@@ -67,17 +66,45 @@ svc [ p | r | s ] [ service(s) ]
 * r - restart
 * s - start
 
-_Services status_:
+#### Services status
 ```
 svc
 ```
 
+#### Switch PHP current version
+```
+phpsw X.Y
+```
+#### Examples
 
-_Example - restart NginX server and PHP7.2 FPM services_:
+_Create empty site **webarchive**_
+```
+site add webarchive
+```
+* docroot **www**
+* PHP **current** version
+
+_Create site **stack** from existing project choosing older PHP version_
+```
+site add stack -p 7.1
+```
+* docroot **original** (obtained)
+* PHP **7.1**
+
+_Remove site **stack** with all PHP versions pools_
+```
+site rm stack -f
+```
+_Removed_:
+* PHP **7.1** pool definition
+* **NginX** definition
+* hosts record
+* Project source directory
+
+_Restart **NginX** server and **PHP7.1 FPM** service_:
 ```
 svc r ng 2
 ```
 
-
-_Variables & Paths_
+#### Variables & Paths
 * All these settings are in the file _var.sh_.
