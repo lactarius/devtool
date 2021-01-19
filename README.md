@@ -5,15 +5,13 @@ LEMP with multiversion PHP project manager
 
 ```shell
 cd devtool
-source cli.sh
+source dt.sh
 cd
 ```
 #### Prepare environment
 ```
-envi prep [ --force | -f ]
+envi prep
 ```
-* --force - remove first
-
 #### Remove environment
 ```
 envi tidy
@@ -21,12 +19,11 @@ envi tidy
 
 #### Create site
 ```
-site add website [ --root | -r PATH ] [ --php | -p X.Y ] [ --force | -f ] [ --simple | -s ]
+site add website [ --root | -r PATH ] [ --php | -p X.Y ] [ --simple | -s ]
 ```
 * --root - project root path (index.php)
 * --php	- PHP version
-* --force - force defined document root
-* --simple - don't touch the hosts order
+* --simple - don't touch hosts records order
 
 #### Disable / enable site
 ```
@@ -35,15 +32,12 @@ site dis / ena website
 
 #### Remove site
 ```
-site rm website [ --force | -f ]
+site rm website
 ```
-* --force - remove rests and all PHP versions pools
-
 #### List sites
 ```
 site ls
 ```
-
 _Individually_:
 
 #### Create PHP-FPM pool for site
@@ -57,6 +51,11 @@ pool add website [ --php | -p X.Y ]
 host add website [ --simple ]
 ```
 * --simple - don't touch the hosts order
+
+#### Pseudo GUI
+```
+site
+```
 
 #### Services
 ```
