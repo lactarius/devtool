@@ -1,3 +1,5 @@
+############### ENVIRONMENT ###############
+
 # templates
 # common
 common_tpl() {
@@ -59,6 +61,7 @@ location ~ \.php$ {
 EOT
 }
 
+# prepare envi
 _envi_prep() {
   declare common_path="$HTTP_PATH/$HTTP_EXT_PATH"
 
@@ -80,6 +83,7 @@ _envi_prep() {
   mkdir "$DEV_PATH" && addmsg "Virtual sites path added."
 }
 
+# remove envi
 _envi_tidy() {
   [[ -d $DEV_PATH ]] && rm -r "$DEV_PATH" && addmsg "The development path removed."
   [[ -d $HTTP_PATH/$HTTP_EXT_PATH ]] && sudo rm -r "$HTTP_PATH/$HTTP_EXT_PATH" &&

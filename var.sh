@@ -1,3 +1,5 @@
+############### VARIABLES ##############
+
 # system variables
 SITE_USER="$USER"
 SITE_GROUP="$USER"

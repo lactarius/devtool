@@ -1,17 +1,19 @@
+############### UTILITIES ################
+
 # is string an IPv4 address?
-# $1 tested string
+# $1 - tested string
 is_ip4() {
     [[ $1 =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]
 }
 
 # is string an IPv6 address?
-# $1 tested string
+# $1 - tested string
 is_ip6() {
     [[ $1 =~ ^([0-9a-fA-F]{0,4}:){1,7}[0-9a-fA-F]{0,4}$ ]]
 }
 
 # sort array alphabetically
-# $1 array name
+# $1 - array name
 sort_array() {
     local -n array=$1
     IFS=$'\n' array=($(sort <<<"${array[*]}"))
@@ -46,6 +48,8 @@ contains() {
 }
 
 # write text to file
+# $1 - content
+# $2 - file
 write() {
     declare text="$1" path="$2"
     if [[ -w $path ]]; then
@@ -56,6 +60,8 @@ write() {
 }
 
 # create file backup copy
+# $1 - file
+# $2 - extension
 backup() {
     ((BACKUP_OFF)) && return
     declare file="$1" ext="${2:-$BACKUP_EXT}"

@@ -1,3 +1,5 @@
+############### SITE ##################
+
 # site definition
 # $1 - site name
 # $2 - document root path
@@ -46,6 +48,7 @@ _site_dis() {
         addmsg "Site '$name' disabled."
 }
 
+# toggle selected sites status
 _site_change_list() {
     declare tag name
     declare -i i
@@ -62,6 +65,7 @@ _site_change_list() {
     done
 }
 
+# add site
 _site_add() {
     declare sitedef docroot="$(readlink -m "$DEV_PATH/$NAME/$ROOT")"
 
@@ -73,6 +77,7 @@ _site_add() {
         addmsg "The development path doesn't exist. Run 'envi prep' first." $MSG_TYPE_ERR &&
         return 1
 
+    # HTTP definition already exists
     [[ -f $HTTP_AVAILABLE/$NAME.conf ]] &&
         addmsg "Site '$NAME' definition already exists." $MSG_TYPE_ERR &&
         return 1
@@ -103,6 +108,7 @@ _site_add() {
     return 0
 }
 
+# remove site
 _site_rm() {
     [[ -d $DEV_PATH/$NAME ]] && rm -rf "$DEV_PATH/$NAME" &&
         addmsg "Site '$NAME' development path removed."
@@ -110,6 +116,7 @@ _site_rm() {
         addmsg "Site '$NAME' definition removed."
 }
 
+# list sites
 _site_list() {
     declare site curdir
     declare -i enabled len
@@ -126,66 +133,6 @@ _site_list() {
         [[ -L $HTTP_ENABLED/$site.conf ]] && enabled=1 || enabled=0
         SITE_ENABLED+=($enabled)
     done
-}
-
-# Pseudo GUI
-# site checklist
-_gi_site_checklist() {
-    declare arglist status sel
-    declare -i i cnt=${#SITE_LIST[@]} maxlen
-
-    ((cnt == 0)) && return 0
-    for ((i = 0; i < cnt; i++)); do
-        arglist+=" $((i + 1)) ${SITE_LIST[$i]}"
-        ((${SITE_ENABLED[i]})) && status=ON || status=OFF
-        arglist+=" $status"
-    done
-    sel=$(whiptail --title "Site status" --separate-output --checklist "" \
-        $((cnt + 6)) $((NAME_MAX_LENGTH + 20)) $cnt \
-        $arglist 3>&1 1>&2 2>&3)
-    (($?)) && return 1
-    mapfile -t SITE_SEL <<<"$sel"
-}
-
-# site add GI
-_gi_site_add() {
-    NAME=$(whiptail --inputbox "Site name" 8 80 "$NAME" 3>&1 1>&2 2>&3)
-    [[ -z $NAME ]] && return 1
-
-    ROOT=$(whiptail --inputbox "Site '$NAME' document root" 8 80 "$ROOT" 3>&1 1>&2 2>&3)
-    [[ -z $ROOT ]] && return 1
-
-    PHPV=$(whiptail --inputbox "Site '$NAME' --root=$ROOT PHP version" 8 80 "$PHPV" 3>&1 1>&2 2>&3)
-    [[ -z $PHPV ]] && return 1
-
-    echo "$NAME --root=$ROOT --php=$PHPV"
-}
-
-# site management GI
-_gi_site() {
-    declare choice def
-
-    CLI=0
-    while ((1)); do
-
-        choice=$(whiptail --title "Site" --menu "" 18 100 10 \
-            "list" "List existing projects & set mode" \
-            "add" "Add new site" \
-            "remove" "Remove existing site" 3>&1 1>&2 2>&3)
-
-        case $choice in
-            list)
-                _site_list && _gi_site_checklist && _site_change_list
-                ;;
-            add)
-                def="$(_gi_site_add)"
-                [[ -n $def ]] && site add $def
-                ;;
-            *) break ;;
-        esac
-
-    done
-    CLI=1
 }
 
 # site management

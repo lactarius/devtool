@@ -25,14 +25,13 @@ site add website [ --root | -r PATH ] [ --php | -p X.Y ] [ --simple | -s ]
 * --php	- PHP version
 * --simple - don't touch hosts records order
 
-#### Disable / enable site
-```
-site dis / ena website
-```
-
 #### Remove site
 ```
 site rm website
+```
+#### Disable / enable site
+```
+site dis / ena website
 ```
 #### List sites
 ```
@@ -56,7 +55,6 @@ host add website [ --simple ]
 ```
 site
 ```
-
 #### Services
 ```
 svc [ p | r | s ] [ service(s) ]
@@ -69,7 +67,6 @@ svc [ p | r | s ] [ service(s) ]
 ```
 svc
 ```
-
 #### Switch PHP current version
 ```
 phpsw X.Y
@@ -90,9 +87,9 @@ site add stack -p 7.1
 * docroot **original** (obtained)
 * PHP **7.1**
 
-_Remove site **stack** with all PHP versions pools_
+_Remove site **stack**_
 ```
-site rm stack -f
+site rm stack
 ```
 _Removed_:
 * PHP **7.1** pool definition
@@ -102,7 +99,7 @@ _Removed_:
 
 _Restart **NginX** server and **PHP7.1 FPM** service_:
 ```
-svc r ng 2
+svc r ng 1
 ```
 
 #### Variables & Paths
