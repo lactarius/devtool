@@ -16,19 +16,19 @@ envi prep
 ```
 envi tidy
 ```
-
 #### Create site
 ```
-site add website [ --root | -r PATH ] [ --php | -p X.Y ] [ --simple | -s ]
+site add website [ --root | -r PATH ] [ --php | -p X.Y ] [ --source | -s ] [ --host | -h ]
 ```
 * --root - project root path (index.php)
 * --php	- PHP version
-* --simple - don't touch hosts records order
+* --host - don't touch hosts records order
 
 #### Remove site
 ```
-site rm website
+site rm website [ --source | -s ]
 ```
+* --source - preserve project sources
 #### Disable / enable site
 ```
 site dis / ena website
@@ -45,6 +45,10 @@ pool add website [ --php | -p X.Y ]
 ```
 * --php	- PHP version
 
+#### Remove PHP-FPM pool for site
+```
+pool rm website
+```
 #### Add IP host record for site
 ```
 host add website [ --simple ]
@@ -87,15 +91,14 @@ site add stack -p 7.1
 * docroot **original** (obtained)
 * PHP **7.1**
 
-_Remove site **stack**_
+_Remove site **stack** and preserve sources_
 ```
-site rm stack
+site rm stack -s
 ```
 _Removed_:
 * PHP **7.1** pool definition
 * **NginX** definition
 * hosts record
-* Project source directory
 
 _Restart **NginX** server and **PHP7.1 FPM** service_:
 ```
@@ -103,4 +106,4 @@ svc r ng 1
 ```
 
 #### Variables & Paths
-* All these settings are in the file _var.sh_.
+* All these settings are in the file **`var.sh`**

@@ -46,7 +46,7 @@ msgout() {
         done
 
         ((err)) && title+=" ERRORS !"
-        whiptail --title "$title" --msgbox "$text" $((cnt + 6)) 100
+        whiptail --title "$title" --msgbox "$text" $((cnt + 8)) 80
 
     fi
 
@@ -107,58 +107,135 @@ prepareline() {
 
 ############### GUI ################
 
-# site checklist
-_gi_site_checklist() {
-    declare arglist status sel
-    declare -i i cnt=${#SITE_LIST[@]} maxlen
+# choose site
+# $1 - menu header
+_gui_site_choose() {
+    declare arglist choice header="$1"
+    declare -i i cnt
 
+    _site_list
+    cnt=${#SITE_LIST[@]}
     ((cnt == 0)) && return 0
+
     for ((i = 0; i < cnt; i++)); do
-        arglist+=" $((i + 1)) ${SITE_LIST[$i]}"
+        arglist+=" ${SITE_LIST[$i]} ${SITE_POOL[$i]}"
+    done
+
+    choice=$(whiptail --title "Choose site" --menu "$header" \
+        $((cnt + 10)) $((NAME_MAX_LENGTH + 20)) $cnt $arglist 3>&1 1>&2 2>&3)
+    (($?)) && return 1
+
+    echo "$choice"
+}
+
+# PHP version choose
+# $1 - menu header
+# $2 - except item
+_gui_php_choose() {
+    declare phpv arglist header="$1" except="$2"
+    declare -i cnt=${#PHP_LIST[@]}
+
+    for phpv in "${PHP_LIST[@]}"; do
+        [[ $phpv != $except ]] && arglist+=" $phpv PHP-FPM"
+    done
+
+    [[ -n $except ]] && cnt=$((cnt - 1))
+    phpv=$(whiptail --title "Choose PHP version" --menu "$header" \
+        --noitem --default-item "$PHPV" $((cnt + 8)) 30 $cnt $arglist 3>&1 1>&2 2>&3)
+    (($?)) && return 1
+
+    echo "$phpv"
+}
+
+# site switch PHP version
+_gui_site_switch() {
+    declare site phpv cur
+
+    site=$(_gui_site_choose "Site to switch PHP version")
+    [[ -z $site ]] && return 1
+
+    cur="$(_pool_check "$site")"
+    phpv=$(_gui_php_choose "Site '$site' new PHP version" "$cur")
+    [[ -z $phpv ]] && return 1
+
+    pool add $site --php=$phpv
+}
+
+# site checklist
+_gui_site_checklist() {
+    declare arglist status select
+    declare -i i cnt
+
+    _site_list
+    cnt=${#SITE_LIST[@]}
+    ((cnt == 0)) && return 0
+
+    for ((i = 0; i < cnt; i++)); do
+        arglist+=" ${SITE_LIST[$i]} ${SITE_POOL[$i]}"
         ((${SITE_ENABLED[i]})) && status=ON || status=OFF
         arglist+=" $status"
     done
-    sel=$(whiptail --title "Site status" --separate-output --checklist "" \
+
+    select=$(whiptail --title "Project status" --separate-output --checklist "Change site status" \
         $((cnt + 6)) $((NAME_MAX_LENGTH + 20)) $cnt \
         $arglist 3>&1 1>&2 2>&3)
     (($?)) && return 1
-    mapfile -t SITE_SEL <<<"$sel"
+    mapfile -t SITE_SEL <<<"$select"
+
+    _site_change_list
 }
 
-# site add GI
-_gi_site_add() {
-    NAME=$(whiptail --inputbox "Site name" 8 80 "$NAME" 3>&1 1>&2 2>&3)
-    [[ -z $NAME ]] && return 1
+# site add GUI
+_gui_site_add() {
+    declare site root phpv
 
-    ROOT=$(whiptail --inputbox "Site '$NAME' document root" 8 80 "$ROOT" 3>&1 1>&2 2>&3)
-    [[ -z $ROOT ]] && return 1
+    site=$(whiptail --title "New project" --inputbox "Site name" 8 40 "$NAME" 3>&1 1>&2 2>&3)
+    [[ -z $site ]] && return 1
 
-    PHPV=$(whiptail --inputbox "Site '$NAME' --root=$ROOT PHP version" 8 80 "$PHPV" 3>&1 1>&2 2>&3)
-    [[ -z $PHPV ]] && return 1
+    root=$(whiptail --title "New project" --inputbox "Site '$site' document root" 8 40 "$ROOT" 3>&1 1>&2 2>&3)
+    [[ -z $root ]] && return 1
 
-    echo "$NAME --root=$ROOT --php=$PHPV"
+    phpv=$(_gui_php_choose "Site PHP version")
+    [[ -z $phpv ]] && return 1
+
+    site add $site --root=$root --php=$phpv
 }
 
-# site management GI
-_gi_site() {
-    declare choice def
+# site remove GUI
+_gui_site_rm() {
+    declare site arglist
+
+    site=$(_gui_site_choose "Remove project")
+    [[ -z $site ]] && return 1
+    arglist="$site"
+
+    if (whiptail --title "Remove project '$site'" --yesno "Preserve sources ?" 8 30); then
+        arglist+=' --source'
+    fi
+
+    site rm $arglist
+}
+
+# site management GUI
+_gui_site() {
+    declare choice def name
 
     CLI=0
     while ((1)); do
 
-        choice=$(whiptail --title "Site" --menu "" 18 100 10 \
-            "list" "List existing projects & set mode" \
-            "add" "Add new site" \
-            "remove" "Remove existing site" 3>&1 1>&2 2>&3)
+        choice=$(
+            whiptail --title "Project management" --menu "" 12 50 4 \
+                "list" "List existing projects & set mode" \
+                "switch" "Switch project PHP version" \
+                "add" "Add new project" \
+                "remove" "Remove existing project" 3>&1 1>&2 2>&3
+        )
 
         case $choice in
-            list)
-                _site_list && _gi_site_checklist && _site_change_list
-                ;;
-            add)
-                def="$(_gi_site_add)"
-                [[ -n $def ]] && site add $def
-                ;;
+            list) _gui_site_checklist ;;
+            add) _gui_site_add ;;
+            remove) _gui_site_rm ;;
+            switch) _gui_site_switch ;;
             *) break ;;
         esac
 

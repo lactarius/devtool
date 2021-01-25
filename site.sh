@@ -35,7 +35,8 @@ EOT
 _site_ena() {
     declare name="${1:-$NAME}"
 
-    sudo ln -s "$HTTP_AVAILABLE/$name.conf" "$HTTP_ENABLED/" &&
+    [[ -f $HTTP_AVAILABLE/$name$CFG_EXT && ! -L $HTTP_ENABLED/$name$CFG_EXT ]] &&
+        sudo ln -s "$HTTP_AVAILABLE/$name$CFG_EXT" "$HTTP_ENABLED/" &&
         addmsg "Site '$name' enabled."
 }
 
@@ -44,25 +45,9 @@ _site_ena() {
 _site_dis() {
     declare name="${1:-$NAME}"
 
-    sudo rm "$HTTP_ENABLED/$name.conf" &&
+    [[ -L $HTTP_ENABLED/$name$CFG_EXT ]] &&
+        sudo rm "$HTTP_ENABLED/$name$CFG_EXT" &&
         addmsg "Site '$name' disabled."
-}
-
-# toggle selected sites status
-_site_change_list() {
-    declare tag name
-    declare -i i
-
-    for ((i = 0; i < ${#SITE_LIST[@]}; i++)); do
-        tag=$((i + 1))
-        name="${SITE_LIST[$i]}"
-        #contains $tag SITE_SEL 0 2 && _site_ena $name || _site_dis $name
-        if contains $tag SITE_SEL 0 2; then
-            [[ ! -L $HTTP_ENABLED/$name.conf ]] && _site_ena $name
-        else
-            [[ -L $HTTP_ENABLED/$name.conf ]] && _site_dis $name
-        fi
-    done
 }
 
 # add site
@@ -78,7 +63,7 @@ _site_add() {
         return 1
 
     # HTTP definition already exists
-    [[ -f $HTTP_AVAILABLE/$NAME.conf ]] &&
+    [[ -f $HTTP_AVAILABLE/$NAME$CFG_EXT ]] &&
         addmsg "Site '$NAME' definition already exists." $MSG_TYPE_ERR &&
         return 1
 
@@ -86,8 +71,8 @@ _site_add() {
     if [[ -d $DEV_PATH/$NAME ]]; then
         # index.php existence
         indexpath=$(find "$DEV_PATH/$NAME" -name 'index.php')
-        # force mot used >> use original docroot
-        [[ -n $indexpath && $FORCE -eq 0 ]] && docroot="$(dirname $indexpath)"
+        # use original docroot if exist
+        [[ -n $indexpath ]] && docroot="$(dirname $indexpath)"
     else
         mkdir "$DEV_PATH/$NAME" && addmsg "Site '$NAME' project path added."
     fi
@@ -102,7 +87,7 @@ _site_add() {
 
     # site definition
     sitedef="$(site_tpl "$NAME" "$docroot" "$LOG_PATH")"
-    write "$sitedef" "$HTTP_AVAILABLE/$NAME.conf" &&
+    write "$sitedef" "$HTTP_AVAILABLE/$NAME$CFG_EXT" &&
         addmsg "Site '$NAME' definition added."
 
     return 0
@@ -110,9 +95,9 @@ _site_add() {
 
 # remove site
 _site_rm() {
-    [[ -d $DEV_PATH/$NAME ]] && rm -rf "$DEV_PATH/$NAME" &&
+    [[ $SOURCE -eq 0 && -d $DEV_PATH/$NAME ]] && rm -rf "$DEV_PATH/$NAME" &&
         addmsg "Site '$NAME' development path removed."
-    [[ -f $HTTP_AVAILABLE/$NAME.conf ]] && sudo rm "$HTTP_AVAILABLE/$NAME.conf" &&
+    [[ -f $HTTP_AVAILABLE/$NAME$CFG_EXT ]] && sudo rm "$HTTP_AVAILABLE/$NAME$CFG_EXT" &&
         addmsg "Site '$NAME' definition removed."
 }
 
@@ -122,16 +107,33 @@ _site_list() {
     declare -i enabled len
 
     SITE_ENABLED=()
+    SITE_POOL=()
     NAME_MAX_LENGTH=0
+
     curdir="$PWD"
-    cd "$DEV_PATH"
-    SITE_LIST=($(ls -d */ | sed 's#/##'))
+    cd "$HTTP_AVAILABLE"
+    SITE_LIST=($(ls *$CFG_EXT | sed "s/$CFG_EXT$//"))
     cd "$curdir"
+
     for site in "${SITE_LIST[@]}"; do
         len=${#site}
         ((len > NAME_MAX_LENGTH)) && NAME_MAX_LENGTH=$len
-        [[ -L $HTTP_ENABLED/$site.conf ]] && enabled=1 || enabled=0
+        [[ -L $HTTP_ENABLED/$site$CFG_EXT ]] && enabled=1 || enabled=0
         SITE_ENABLED+=($enabled)
+        SITE_POOL+=($(_pool_check "$site"))
+    done
+}
+
+# toggle selected sites status
+_site_change_list() {
+    declare name
+
+    for name in "${SITE_LIST[@]}"; do
+        if contains $name SITE_SEL; then
+            _site_ena $name
+        else
+            _site_dis $name
+        fi
     done
 }
 
@@ -139,30 +141,30 @@ _site_list() {
 site() {
     declare title
 
-    SHORT=-fn:p:r:q
-    LONG=force,name:,php:,root:,quiet
+    SHORT=-hn:p:r:s
+    LONG=host,name:,php:,root:,source
     _optarg "$@"
     msgclr
 
     case $CMD in
         $CMD_ADD)
-            title='Adding site'
+            title="Adding site $NAME"
             _site_add && _pool_add && _host && _site_ena
             ;;
         $CMD_RM)
-            title='Removing site'
+            title="Removing site $NAME"
             _site_dis
             _host
             _pool_rm
             _site_rm
             ;;
-        $CMD_ENA) title='Enabling site' && _site_ena ;;
-        $CMD_DIS) title='Disabling site' && _site_dis ;;
+        $CMD_ENA) title="Enabling site $NAME" && _site_ena ;;
+        $CMD_DIS) title="Disabling site $NAME" && _site_dis ;;
         $CMD_LIST)
             _site_list
             lstout
             ;;
-        *) _gi_site ;;
+        *) _gui_site ;;
     esac
     msgout "$title"
 }

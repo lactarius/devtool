@@ -10,7 +10,7 @@ fi
 
 # VARIABLES
 declare CMD NAME ROOT="$DEF_ROOT" PHPV="$(phpver)"
-declare -i SIMPLE
+declare -i HOST_ORIG SOURCE
 declare PARSED
 declare -a POSARG
 declare -i NPOSARG
@@ -19,8 +19,9 @@ declare SHORT LONG
 # OPTIONS & ARGUMENTS
 _optarg() {
     CMD=''
-    SIMPLE=0
+    HOST_ORIG=0
     NAME=''
+    SOURCE=0
     POSARG=()
 
     PARSED=$(getopt --options "${SHORT}" --longoptions "${LONG}" --name "$0" -- "$@")
@@ -31,7 +32,7 @@ _optarg() {
 
     while (($# > 0)); do
         case $1 in
-            -s | --simple) SIMPLE=1 ;;
+            -h | --host) HOST_ORIG=1 ;;
             -n | --name)
                 shift
                 NAME="$1"
@@ -44,6 +45,7 @@ _optarg() {
                 shift
                 ROOT="$1"
                 ;;
+            -s | --source) SOURCE=1 ;;
             --) break ;;
             *) POSARG+=("$1") ;;
         esac
