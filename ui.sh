@@ -1,5 +1,4 @@
 ############### UI ###################
-
 declare UI_LINE
 
 # draw prepared line
@@ -77,6 +76,63 @@ lstout() {
     for ((i = 0; i < ${#SITE_LIST[@]}; i++)); do
         col ${ITEM_COLOR[${SITE_ENABLED[$i]}]} "${SITE_LIST[$i]}"
     done
+    drawline
+}
+
+# site help
+_site_help() {
+    prepareline 60
+    col yellow "Site management"
+    drawline
+    col -n yellow "add\t"
+    col green "Add new site"
+    col -n yellow "rm\t"
+    col green "Remove site"
+    col -n yellow "dis\t"
+    col green "Disable site"
+    col -n yellow "ena\t"
+    col green "Enable site"
+    col -n yellow "ls\t"
+    col green "List sites"
+    col -n yellow "\n--root <path>\t"
+    col green "Document root"
+    col -n yellow "--php <x.y>\t"
+    col green "PHP version"
+    col -n yellow "--source\t"
+    col green "Preserve sources"
+    col -n yellow "--host\t\t"
+    col green "Don't touch hosts order"
+    col yellow "\nExamples:"
+    col green "Add site 'blog', docroot: www, PHP current =>"
+    col -n yellow "$ "
+    col lgray 'site add blog'
+    col green "Add site 'adminer', docroot: /, PHP7.4 =>"
+    col -n yellow "$ "
+    col lgray 'site add adminer -r / -p 8.0'
+    col green "Remove site 'blog' and preserve sources =>"
+    col -n yellow "$ "
+    col lgray 'site rm blog -s'
+    drawline
+}
+
+# services help
+_svc_help() {
+    prepareline 40
+    col yellow "Services usage"
+    drawline
+    col -n yellow "p\t"
+    col green "Stop"
+    col -n yellow "r\t"
+    col green "Restart"
+    col -n yellow "s\t"
+    col green "Start"
+    col yellow "\nExamples:"
+    col green "Stop NginX and PHP-FPM 8.0 =>"
+    col -n yellow "$ "
+    col lgray "svc p ng 8"
+    col green "Switch default PHP version to 7.4 =>"
+    col -n yellow "$ "
+    col lgray "phpsw 7.4"
     drawline
 }
 

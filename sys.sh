@@ -1,6 +1,5 @@
 ############### SERVICES ################
-
-_loadsvc() {
+_svc_load() {
     declare selection line name
     declare -a table
 
@@ -23,12 +22,20 @@ svc() {
     declare -a sel=("${@:2}") svcact
 
     case $cmd in
+        h)
+            _svc_help
+            return 0
+            ;;
         p) cmd=stop ;;
         r) cmd=restart ;;
         s) cmd=start ;;
+        h | help)
+            _svc_help
+            return 0
+            ;;
         *) cmd=list ;;
     esac
-    _loadsvc
+    _svc_load
     if [[ $cmd != list ]]; then
         for name in "${sel[@]}"; do
             service=$(contains $name SVC_LIST 2 1)
@@ -38,7 +45,7 @@ svc() {
         for service in "${svcact[@]}"; do
             sudo systemctl $cmd $service
         done
-        _loadsvc
+        _svc_load
     fi
     svcout
 }

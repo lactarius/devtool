@@ -164,6 +164,7 @@ site() {
             _site_list
             lstout
             ;;
+        $CMD_HELP) _site_help ;;
         *) _gui_site ;;
     esac
     msgout "$title"
