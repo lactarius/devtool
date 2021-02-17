@@ -23,7 +23,7 @@ _host() {
                 printf -v newline '%s\t%s' "$ip" "${sites[*]}"
                 cache+=("$newline")
 
-                if ((!$SIMPLE)) && is_ip6 "$ip"; then
+                if ((!$HOST_ORIG)) && is_ip6 "$ip"; then
                     ip6+=("${cache[@]}")
                 else
                     newlist+=("${cache[@]}")
@@ -61,8 +61,8 @@ _host() {
 host() {
     declare title='Hosts'
 
-    SHORT=-n:s
-    LONG=name:simple
+    SHORT=-hn:
+    LONG=host,name:
     _optarg "$@"
     msgclr
     _host

@@ -20,7 +20,7 @@ envi tidy
 ```
 site add website [ --root | -r PATH ] [ --php | -p X.Y ] [ --source | -s ] [ --host | -h ]
 ```
-* --root - project root path (index.php)
+* --root - project root relative path (index.php)
 * --php	- PHP version
 * --host - don't touch hosts records order
 
@@ -51,9 +51,9 @@ pool rm website
 ```
 #### Add IP host record for site
 ```
-host add website [ --simple ]
+host add website [ --host | -h ]
 ```
-* --simple - don't touch the hosts order
+* --host - don't touch the hosts order
 
 #### Pseudo GUI
 ```
