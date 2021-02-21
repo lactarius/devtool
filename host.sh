@@ -23,7 +23,7 @@ _host() {
                 printf -v newline '%s\t%s' "$ip" "${sites[*]}"
                 cache+=("$newline")
 
-                if ((!$HOST_ORIG)) && is_ip6 "$ip"; then
+                if is_ip6 "$ip" && ((!$KEEP)); then
                     ip6+=("${cache[@]}")
                 else
                     newlist+=("${cache[@]}")

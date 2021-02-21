@@ -10,20 +10,20 @@ cd
 ```
 #### Prepare environment
 ```
-envi prep
+envi add [ --force | -f ]
 ```
+* --force - remove first
 #### Remove environment
 ```
-envi tidy
+envi rm
 ```
 #### Create site
 ```
-site add website [ --root | -r PATH ] [ --php | -p X.Y ] [ --source | -s ] [ --host | -h ]
+site add website [ --root | -r PATH ] [ --php | -p X.Y ] [ --source | -s ] [ --keep | -k ]
 ```
 * --root - project root relative path (index.php)
 * --php	- PHP version
-* --host - don't touch hosts records order
-
+* --keep - don't touch hosts records order
 #### Remove site
 ```
 site rm website [ --source | -s ]
@@ -51,9 +51,9 @@ pool rm website
 ```
 #### Add IP host record for site
 ```
-host add website [ --host | -h ]
+host add website [ --keep | -k ]
 ```
-* --host - don't touch the hosts order
+* --keep - don't touch the hosts order
 
 #### Pseudo GUI
 ```

@@ -143,7 +143,7 @@ site() {
 
     SHORT=-hn:p:r:s
     LONG=host,name:,php:,root:,source
-    _optarg "$@"
+    _optarg "$@" || return 5
     msgclr
 
     case $CMD in

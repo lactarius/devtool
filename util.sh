@@ -76,3 +76,5 @@ backup() {
 phpver() {
     php -v | sed -e '/^PHP/!d' -e 's/.* \([0-9]\+\.[0-9]\+\).*$/\1/'
 }
+
+PHPV="$(phpver)"

@@ -8,31 +8,27 @@ if (($? != 4)); then
     return 1
 fi
 
-# VARIABLES
-declare CMD NAME ROOT="$DEF_ROOT" PHPV="$(phpver)"
-declare -i HOST_ORIG SOURCE
-declare PARSED
-declare -a POSARG
-declare -i NPOSARG
-declare SHORT LONG
-
 # OPTIONS & ARGUMENTS
 _optarg() {
-    CMD=''
-    HOST_ORIG=0
-    NAME=''
+    # init
+    FORCE=0
+    KEEP=0
     SOURCE=0
+    CMD=
+    NAME=
     POSARG=()
-
+    # generate command
     PARSED=$(getopt --options "${SHORT}" --longoptions "${LONG}" --name "$0" -- "$@")
     # options - arguments error
     (($? != 0)) && return 9
-
+    # execute
     eval set -- "${PARSED}"
 
     while (($# > 0)); do
         case $1 in
-            -h | --host) HOST_ORIG=1 ;;
+            -f | --force) FORCE=1 ;;
+            -k | --keep) KEEP=1 ;;
+            -s | --source) SOURCE=1 ;;
             -n | --name)
                 shift
                 NAME="$1"
@@ -45,16 +41,17 @@ _optarg() {
                 shift
                 ROOT="$1"
                 ;;
-            -s | --source) SOURCE=1 ;;
             --) break ;;
             *) POSARG+=("$1") ;;
         esac
         shift
     done
 
+    # positional arguments
     NPOSARG=${#POSARG[@]}
-    ((NPOSARG < 1)) && return 1
+    ((NPOSARG < 1)) && return 2
 
+    # command word - 1. positional
     CMD="${POSARG[0]}"
     [[ $NPOSARG -gt 1 && -z $NAME ]] && NAME="${POSARG[1]}"
 }
