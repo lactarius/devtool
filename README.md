@@ -17,7 +17,7 @@ envi add [ --force | -f ]
 ```
 envi rm
 ```
-#### Create site
+#### Create new site
 ```
 site add website [ --root | -r PATH ] [ --php | -p X.Y ] [ --source | -s ] [ --keep | -k ]
 ```
