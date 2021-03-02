@@ -141,6 +141,8 @@ _site_change_list() {
 site() {
   declare title
 
+  [[ -z ${1} ]] && _gui_site
+
   SHORT=-fn:p:r:s
   LONG=force,name:,php:,root:,preserve
   _optarg "$@" || return 5
@@ -165,7 +167,7 @@ site() {
       lstout
       ;;
     $CMD_HELP) _site_help ;;
-    *) _gui_site ;;
+    *) addmsg "Command not recognized: $CMD" $MSG_TYPE_ERR ;;
   esac
   msgout "$title"
 }
