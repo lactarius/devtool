@@ -5,7 +5,7 @@
 . util.sh
 . ui.sh
 . optarg.sh
-. sys.sh
+. svc.sh
 . envi.sh
 . site.sh
 . pool.sh
