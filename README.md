@@ -19,16 +19,17 @@ envi rm
 ```
 #### Create new site
 ```
-site add website [ --root | -r PATH ] [ --php | -p X.Y ] [ --source | -s ] [ --keep | -k ]
+site add website [ --root | -r PATH ] [ --php | -p X.Y ] [ -s | --preserve ] [ -f | --force ]
 ```
 * --root - project root relative path (index.php)
 * --php	- PHP version
-* --keep - don't touch hosts records order
+* --preserve - don't touch hosts records order
+* --force - when source exist, don't accept root (index.php) path
 #### Remove site
 ```
-site rm website [ --source | -s ]
+site rm website [ --preserve | -s ]
 ```
-* --source - preserve project sources
+* --preserve - preserve project sources
 #### Disable / enable site
 ```
 site dis / ena website
@@ -51,9 +52,9 @@ pool rm website
 ```
 #### Add IP host record for site
 ```
-host add website [ --keep | -k ]
+host add website [ --preserve | -s ]
 ```
-* --keep - don't touch the hosts order
+* --preserve - don't touch the hosts order
 
 #### Pseudo GUI
 ```
