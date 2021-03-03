@@ -56,26 +56,19 @@ host add website [ --preserve | -s ]
 ```
 * --preserve - don't touch the hosts order
 
-#### Pseudo GUI
+#### TUI
 ```
 site
 ```
 #### Services
 ```
-svc [ p | r | s ] [ service(s) ]
+svc [ p | r | s  service(s) ][ v X.Y ]
 ```
 * p - stop
 * r - restart
 * s - start
+* v - switch default PHP version
 
-#### Services status
-```
-svc
-```
-#### Switch PHP current version
-```
-phpsw X.Y
-```
 #### Examples
 
 _Create empty site **webarchive**_
@@ -101,10 +94,13 @@ _Removed_:
 * **NginX** definition
 * hosts record
 
-_Restart **NginX** server and **PHP7.1 FPM** service_:
+_Restart **NginX** server and **PHP7.1 FPM** service_
 ```
 svc r ng 1
 ```
-
+_Switch default PHP version to 7.0_
+```
+svc v 7.0
+```
 #### Variables & Paths
 * All these settings are in the file **`var.sh`**

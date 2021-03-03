@@ -141,6 +141,7 @@ _site_change_list() {
 site() {
   declare title
 
+  # with no arguments call TUI
   [[ -z ${1} ]] && _gui_site
 
   SHORT=-fn:p:r:s
