@@ -17,7 +17,7 @@ server {
 	access_log  $3/$1.access.log;
 
 	include common/common.conf;
-	include common/php.conf;
+    include common/php.conf;
 	include common/nette.conf;
 }
 EOT
@@ -52,7 +52,7 @@ _site_dis() {
 
 # add site
 _site_add() {
-  declare sitedef docroot="$(readlink -m "$DEV_PATH/$NAME/$ROOT")"
+  declare sitedef nette phpv docroot="$(readlink -m "$DEV_PATH/$NAME/$ROOT")"
 
   # site name empty
   [[ -z $NAME ]] && addmsg "Site name empty." $MSG_TYPE_ERR && return 1
@@ -63,8 +63,8 @@ _site_add() {
     return 1
 
   # HTTP definition already exists
-  [[ -f $HTTP_AVAILABLE/$NAME$CFG_EXT ]] &&
-    addmsg "Site '$NAME' definition already exists." $MSG_TYPE_ERR &&
+  [[ -f $HTTP_AVAILABLE/$URLNAME$CFG_EXT ]] &&
+    addmsg "Site '$URLNAME' definition already exists." $MSG_TYPE_ERR &&
     return 1
 
   # project path exists
@@ -86,9 +86,9 @@ _site_add() {
     addmsg "Site '$NAME' testing index.php file added."
 
   # site definition
-  sitedef="$(site_tpl "$NAME" "$docroot" "$LOG_PATH")"
-  write "$sitedef" "$HTTP_AVAILABLE/$NAME$CFG_EXT" &&
-    addmsg "Site '$NAME' definition added."
+  sitedef="$(site_tpl "$URLNAME" "$docroot" "$LOG_PATH")"
+  write "$sitedef" "$HTTP_AVAILABLE/$URLNAME$CFG_EXT" &&
+    addmsg "Site '$URLNAME' definition added."
 
   return 0
 }
@@ -97,8 +97,14 @@ _site_add() {
 _site_rm() {
   [[ $PRESERVE -eq 0 && -d $DEV_PATH/$NAME ]] && rm -rf "$DEV_PATH/$NAME" &&
     addmsg "Site '$NAME' development path removed."
-  [[ -f $HTTP_AVAILABLE/$NAME$CFG_EXT ]] && sudo rm "$HTTP_AVAILABLE/$NAME$CFG_EXT" &&
-    addmsg "Site '$NAME' definition removed."
+  [[ -f $HTTP_AVAILABLE/$URLNAME$CFG_EXT ]] && sudo rm "$HTTP_AVAILABLE/$URLNAME$CFG_EXT" &&
+    addmsg "Site '$URLNAME' definition removed."
+}
+
+# remove all extensions
+_site_rm_all() {
+  declare phpvs
+
 }
 
 # list sites
@@ -144,14 +150,16 @@ site() {
   # with no arguments call TUI
   [[ -z ${1} ]] && _gui_site
 
-  SHORT=-fn:p:r:s
-  LONG=force,name:,php:,root:,preserve
+  SHORT=-efn:p:r:s
+  LONG=extend,force,name:,php:,root:,preserve
   _optarg "$@" || return 5
   msgclr
 
+  ((EXTEND)) && URLNAME="$NAME$(phpversim $PHPV)" || URLNAME=$NAME
+
   case $CMD in
     $CMD_ADD)
-      title="Adding site $NAME"
+      ((EXTEND)) && title="Extending site $NAME" || title="Adding site $NAME"
       _site_add && _pool_add && _host && _site_ena
       ;;
     $CMD_RM)

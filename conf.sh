@@ -1,5 +1,4 @@
-############### VARIABLES ##############
-
+############### SETTINGS & DEFAULTS #########
 # system variables
 declare SITE_USER="$USER"
 declare SITE_GROUP="$USER"
@@ -8,6 +7,7 @@ declare LISTEN_GROUP='www-data'
 declare LOCALHOST='127.0.0.1'
 declare CFG_EXT='.conf'
 # paths
+declare DOC_ROOT="www"
 declare HOME_PATH="/home/$USER"
 declare DEV_PATH="$HOME_PATH/virt"
 declare CONF_PATH="/etc"
@@ -19,16 +19,8 @@ declare HTTP_EXT_PATH="common"
 declare PHP_PATH="$CONF_PATH/php"
 declare PHP_LIST=($(ls $PHP_PATH))
 declare DNS_PATH="$CONF_PATH/hosts"
-declare DOC_ROOT="www"
-# optargs
-declare PARSED CMD SHORT LONG NAME URLNAME PHPV ROOT="$DEF_ROOT"
-declare -i NPOSARG EXTEND FORCE PRESERVE
+############### OTHER GLOBALS #############
+# optarg
+declare SHORT LONG PARSED NAME ROOT="$DOC_ROOT"
+declare -i EXTEND FORCE PRESERVE
 declare -a POSARG
-declare SVC_LIST SVC_STATUS SITE_LIST SITE_ENABLED SITE_POOL SITE_SEL
-# commands
-declare CMD_ADD='add'
-declare CMD_RM='rm'
-declare CMD_ENA='ena'
-declare CMD_DIS='dis'
-declare CMD_LIST='ls'
-declare CMD_HELP='help'

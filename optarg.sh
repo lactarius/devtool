@@ -11,6 +11,7 @@ fi
 # OPTIONS & ARGUMENTS
 _optarg() {
   # init
+  EXTEND=0
   FORCE=0
   PRESERVE=0
   CMD=
@@ -25,6 +26,7 @@ _optarg() {
 
   while (($# > 0)); do
     case $1 in
+      -e | --extend) EXTEND=1 ;;
       -f | --force) FORCE=1 ;;
       -s | --preserve) PRESERVE=1 ;;
       -n | --name)
