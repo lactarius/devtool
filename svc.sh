@@ -45,7 +45,7 @@ svc() {
     _svc_load
     if [[ $cmd != list ]]; then
         for name in "${sel[@]}"; do
-            service=$(contains $name SVC_LIST 2 1)
+            service=$(contains $name SVC_LIST 1 1)
             contains $service svcact && continue
             svcact+=("$service")
         done
