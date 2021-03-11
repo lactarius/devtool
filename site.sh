@@ -228,7 +228,7 @@ _site_change_list() {
     declare name
 
     for name in "${SITE_LIST[@]}"; do
-        if contains $name SITE_SEL; then
+        if searcharray $name SITE_SEL; then
             _site_ena $name
         else
             _site_dis $name

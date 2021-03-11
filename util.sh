@@ -20,7 +20,7 @@ sort_array() {
     unset IFS
 }
 
-# search array for a value
+# search value in array
 # $1 - needle
 # $2 - array haystack name
 # $3 - return - 0 - print found index, 1 - -//- value
@@ -28,7 +28,7 @@ sort_array() {
 # $5 - first or all 0 - first match 1 - all matches
 # $6 - matches array name
 # returns 0 when found
-contains() {
+searcharray() {
     declare value="$1" item result
     declare -n haystack=$2 retarr=$6
     declare -i retval=${3:-0} comp=${4:-0} all=${5:-0} i cnt=${#haystack[@]} found=0

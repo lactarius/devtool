@@ -44,11 +44,12 @@ svc() {
     esac
     _svc_load
     if [[ $cmd != list ]]; then
+        svcact=()
         for name in "${sel[@]}"; do
-            service=$(contains $name SVC_LIST 1 1)
-            contains $service svcact && continue
-            svcact+=("$service")
+            searcharray $name SVC_LIST 1 1 1 svcact
         done
+        echo "$cmd ${svcact[@]}"
+        return 0
         SVC_OP=()
         for service in "${svcact[@]}"; do
             SVC_OP+=("$cmd $service")
